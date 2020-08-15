@@ -1,7 +1,9 @@
 const express = require('express')
 const cors = require('cors')
+const multer = require('multer')
+const { extractMetadata } = require('./service')
 
-// require and use "multer"...
+const upload = multer()
 
 const app = express()
 
@@ -12,8 +14,10 @@ app.get('/', (req, res) => {
   res.sendFile(`${process.cwd()}/views/index.html`)
 })
 
-app.get('/hello', (req, res) => {
-  res.json({ greetings: 'Hello, API' })
+app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
+  console.log(req.file)
+  console.log(req.body)
+  res.json(extractMetadata(req.file))
 })
 
 const listener = app.listen(process.env.PORT || 3000, () => {
